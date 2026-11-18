@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>THE GROVE – A Living World of Stock Market Knowledge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--s1:#6fb7e8;--s2:#d6ecf6;--ov:0;--up:#2e9e6a;--dn:#d0453d;--gold:#ffcf7a}
+body.night{--s1:#040919;--s2:#1c2c63;--ov:.34}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:#0b1830;color:#f1efe7;font:400 15px/1.55 'Be Vietnam Pro',system-ui,sans-serif;overflow:hidden}
+#scene{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none}#scene.drag{cursor:grabbing}
+stop{transition:stop-color 1.4s}
+.star{opacity:0;transition:opacity 1.5s}body.night .star{opacity:1;animation:tw 3s ease-in-out infinite alternate}@keyframes tw{to{opacity:.25}}
+.moon,.sun{transition:opacity 1.4s}.moon{opacity:0}body.night .moon{opacity:1}body.night .sun{opacity:0}
+.cloud{animation:dr 60s linear infinite alternate;transition:opacity 1.4s}body.night .cloud{opacity:0}@keyframes dr{to{transform:translateX(160px)}}
+.glow{fill:#ffe2a0;opacity:.8;transition:.8s}body.night .glow{opacity:1;filter:drop-shadow(0 0 4px #ffcf7a)}
+.villa,.hs{cursor:pointer;transition:filter .3s}.villa:hover,.villa:focus,.hs:hover,.hs:focus{filter:brightness(1.15) drop-shadow(0 0 12px rgba(255,207,122,.8));outline:none}
+.hs text{font:500 10.5px 'Be Vietnam Pro';fill:#fff;paint-order:stroke;stroke:#0a1d15;stroke-width:3px;pointer-events:none}
+.sway{animation:sway 5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}@keyframes sway{to{transform:rotate(2.2deg)}}
+.rip{animation:rip 4s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes rip{0%{transform:scale(.4);opacity:.7}100%{transform:scale(1.2);opacity:0}}
+.jet{stroke-dasharray:5 5;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-20}}
+.critter{cursor:pointer}
+#top{position:fixed;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top,0px)) 20px 12px;display:flex;align-items:center;gap:16px;background:linear-gradient(#050b1fcc,transparent);z-index:5}
+#top h1{font:600 22px 'Cormorant Garamond',serif;letter-spacing:.14em;margin:0}
+#bar{flex:1;max-width:240px;height:4px;background:#ffffff26;border-radius:2px;overflow:hidden}#bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .6s}#pct{font-size:12px;color:#b9c7b8}
+button{font:inherit;color:inherit;cursor:pointer}
+.tb{background:#ffffff14;border:1px solid #ffffff30;border-radius:20px;padding:5px 14px;font-size:13px}.tb:hover{background:#ffffff26}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#welcome{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;z-index:4;padding:24px;background:radial-gradient(ellipse at center,#050b1fcc 0,#050b1f00 65%);transition:opacity 1s}
+#welcome.gone{opacity:0}#welcome h2{font:400 clamp(40px,7vw,84px)/1 'Cormorant Garamond',serif;margin:0 0 12px}
+#welcome p{font:italic 400 clamp(17px,2.2vw,24px) 'Cormorant Garamond',serif;color:#c9d4e6;max-width:520px;margin:0 0 26px}
+#go{pointer-events:auto;background:var(--gold);color:#2a1d05;border:0;border-radius:28px;padding:13px 34px;font-weight:500}
+#tip{position:fixed;pointer-events:none;background:#fbf9f2;color:#1b2a22;border-radius:6px;padding:12px 14px;width:240px;font-size:13px;box-shadow:0 10px 30px #0006;opacity:0;transition:opacity .2s;z-index:6}
+#tip b{font:600 19px 'Cormorant Garamond',serif;display:block}#tip em{color:#5d6b61;font-size:12px}#tip .pb{height:3px;background:#0001;margin-top:8px}#tip .pb i{display:block;height:100%;background:#c18a1c}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#fbf9f2;color:#1b2a22;padding:10px 18px;border-radius:22px;opacity:0;transition:.4s;z-index:7;max-width:90vw;font-size:14px}#toast.on{opacity:1;transform:translate(-50%,0)}
+#panel{position:fixed;right:0;top:0;bottom:0;width:min(480px,100%);background:#f6f3ea;color:#1b2a22;transform:translateX(102%);transition:transform .7s cubic-bezier(.2,.7,.2,1);z-index:8;overflow-y:auto;padding:calc(24px + env(safe-area-inset-top,0px)) 24px 40px}#panel.open{transform:none}
+#panel h3{font:600 32px/1.05 'Cormorant Garamond',serif;margin:6px 0 4px}.sub{font:italic 400 17px 'Cormorant Garamond',serif;color:#5d6b61;margin:0 0 14px}
+.back{background:none;border:0;color:#5d6b61;padding:0;font-size:13px}
+.houses{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.house{background:#fff;border:1px solid #1b2a2218;border-radius:4px;padding:10px;text-align:left;color:#1b2a22;transition:transform .25s,box-shadow .25s}.house:hover{transform:translateY(-3px);box-shadow:0 8px 20px #0002}
+.house svg{width:100%;height:56px}.house b{display:block;font:600 17px 'Cormorant Garamond',serif}.house span{font-size:12px;color:#5d6b61}
+.room{display:flex;justify-content:space-between;gap:8px;align-items:center;width:100%;background:#fff;border:1px solid #1b2a2218;padding:11px 14px;margin-bottom:8px;text-align:left;color:#1b2a22;border-radius:4px}.room:hover{background:#fbf3df}.room small{color:#8a6a1c;white-space:nowrap}.room.done small{color:var(--up)}
+.tag{display:inline-block;font-size:11px;padding:2px 10px;border-radius:12px;margin-bottom:8px}.tag.src{background:#dcefe3;color:#1d6b43}.tag.sup{background:#fbeccb;color:#80590b}
+#panel ul{padding-left:18px;margin:8px 0}#panel li{margin:6px 0;font-size:14.5px}
+.cv{width:100%;background:#fff;border:1px solid #1b2a2218;border-radius:4px}
+.row{display:grid;grid-template-columns:70px 1fr 36px;gap:8px;align-items:center;font-size:13px;margin:4px 0}.row input{width:100%;accent-color:#c18a1c}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.chip{border:1px solid #1b2a2230;background:#fff;color:#1b2a22;border-radius:18px;padding:4px 12px;font-size:13px}.chip.on{background:#1b2a22;color:#fff}
+.note{background:#fff;border-left:3px solid #c18a1c;padding:10px 14px;font-size:14px;margin:12px 0}.mini{display:flex;gap:10px}.mini>div{flex:1}
+.ghost{background:#1b2a22;color:#fff;border:0;border-radius:18px;padding:6px 16px;font-size:13px}.nav{display:flex;justify-content:space-between;margin-top:18px}
+.line{fill:none;stroke:#1b2a22;stroke-width:2.2;stroke-dasharray:1;stroke-dashoffset:1;animation:dw 3s ease forwards}@keyframes dw{to{stroke-dashoffset:0}}
+.q{background:#fff;border-radius:4px;padding:12px}.q button{display:block;width:100%;text-align:left;background:#f6f3ea;border:1px solid #1b2a2220;border-radius:4px;padding:8px 12px;margin:6px 0;color:#1b2a22}.q .ok{background:#d9f0e2}.q .no{background:#f8dad7}
+.fine{font-size:11.5px;color:#6a766d;margin-top:22px}
+@media(max-width:640px){#panel{top:auto;height:80vh;width:100%;transform:translateY(102%);border-radius:14px 14px 0 0}#panel.open{transform:none}#top{gap:8px;padding-left:12px;padding-right:12px}#top h1{font-size:16px}#bar{max-width:80px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}.line{stroke-dashoffset:0}}
+</style></head><body class="night">
+<svg id="scene" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Khu biệt thự The Grove giữa rừng"></svg>
+<div id="top"><h1>THE GROVE</h1><div id="bar"><i></i></div><span id="pct">0%</span><span style="flex:1"></span><button class="tb" id="dn">Ngày</button><button class="tb" id="rs">Toàn cảnh</button></div>
+<div id="welcome"><h2>Welcome to The Grove</h2><p>Every house holds a new perspective. Every room opens a new chapter.</p><button id="go">Bắt đầu khám phá</button></div>
+<div id="tip"></div><div id="toast"></div><aside id="panel" aria-live="polite"></aside>
+<script>
+"use strict";
+/* ============ NỘI DUNG (dữ liệu có cấu trúc – sau này nạp từ JSON) ============ */
+const N1="SSI · Ngày 1",N2="SSI · Ngày 2",N3="SSI · Ngày 3",N4="SSI · Ngày 4",NB="SSI · Notebook",BS="Bổ sung ngoài tài liệu";
+const R=(t,s,p,w)=>({t,s,p,w});
+const BANK="Bổ sung ngoài tài liệu – nên đối chiếu quy định hiện hành";
+const V=[
+{id:"nl",n:"Nguyên Lâm",en:"The Beginning of Knowledge",d:"Tổng quan thị trường: cấu trúc, cơ chế, lệnh giao dịch.",x:330,y:640,ac:[236,244,232],gc:"#3f8a56",
+h:[
+["Khai Nguyên","Tổng quan thị trường",[R("Thị trường chứng khoán là gì",BS,["Nơi phát hành và giao dịch chứng khoán (cổ phiếu, trái phiếu…).","Thị trường sơ cấp: doanh nghiệp phát hành mới để huy động vốn. Thị trường thứ cấp: nhà đầu tư mua bán lại với nhau.","Giá hình thành từ cung và cầu (giả định số 1 của PTKT, SSI Ngày 1)."])]],
+["Thị Trường","Cấu trúc và cơ chế vận hành",[R("Ba sàn giao dịch",BS,["HOSE: tập trung doanh nghiệp vốn hóa lớn; biên độ ±7%.","HNX: doanh nghiệp quy mô trung bình; biên độ ±10%.","UPCoM: công ty đại chúng chưa niêm yết chính thức; biên độ ±15%.","Giao dịch thứ Hai–thứ Sáu, trừ ngày lễ.","Cơ quan quản lý đang nghiên cứu thay đổi (giao dịch xuyên trưa, nới biên độ, rút ngắn T+2): kiểm tra quy định hiện hành."])]],
+["Cổ Phiếu","Các loại chứng khoán",[R("Các loại chứng khoán",BS,["Cổ phiếu phổ thông, cổ phiếu ưu đãi.","Trái phiếu, chứng chỉ quỹ.","Chứng quyền, hợp đồng tương lai (phái sinh)."])]],
+["Dòng Chảy","Cung cầu và thanh khoản",[R("Cung, cầu và khối lượng",N1,["Kháng cự: vùng cung vượt cầu khiến giá đang tăng đảo chiều. Hỗ trợ: vùng cầu vượt cung khiến giá đang giảm đảo chiều.","Volume tăng: thị trường hứng thú, thanh khoản cao. Volume thấp: kém thanh khoản hoặc sideway."])]],
+["Chỉ Số","VN-Index, VN30",[R("Các chỉ số thị trường",BS,["VN-Index: chỉ số toàn thị trường HOSE.","VN30: 30 cổ phiếu vốn hóa và thanh khoản lớn nhất HOSE.","SSI Ngày 1 dùng biểu đồ VN30 làm ví dụ đọc nến, MA, volume, MACD."])]],
+["Giao Dịch","Nguyên tắc và các loại lệnh",[R("Phiên và loại lệnh",BANK,["HOSE: ATO 9:00–9:15, khớp lệnh liên tục, ATC 14:30–14:45 (xác định giá đóng cửa).","LO: mua bán tại giá xác định hoặc tốt hơn. ATO/ATC: mua bán tại giá mở/đóng cửa, không kiểm soát được giá.","Giá tham chiếu = giá đóng cửa phiên trước; giá trần/sàn = tham chiếu ±biên độ (SSI Notebook)."])]],
+["Chiến Lược","Các phương pháp đầu tư",[R("PTCB và PTKT",N1,["PTCB: ước tính giá trị hợp lý từ kinh tế vĩ mô, ngành, doanh nghiệp; thường cho đầu tư trung và dài hạn.","PTKT: nghiên cứu cung cầu, giá, khối lượng để dự báo giá ngắn hạn.","Một số nhà phân tích dùng PTCB chọn mua gì, PTKT chọn khi nào mua."])]]]},
+{id:"bt",n:"Bạch Thạch",en:"The Foundation of Value",d:"Phân tích cơ bản: báo cáo tài chính, chỉ số, định giá.",x:700,y:390,ac:[232,240,245],gc:"#7aa093",
+h:[
+["Nội Tại","Tổng quan phân tích cơ bản",[R("Phân tích cơ bản",N1,["Tập trung yếu tố nội tại của nền kinh tế, ngành và doanh nghiệp để ước tính giá trị hợp lý của cổ phiếu.","Cần kiến thức sâu về kinh tế vĩ mô, ngành và doanh nghiệp; thường dùng cho đầu tư trung, dài hạn."])]],
+["Tài Sản","Bảng cân đối kế toán",[
+R("Tài sản ngắn hạn",BS,["Gồm tiền, đầu tư tài chính ngắn hạn, phải thu ngắn hạn, hàng tồn kho. Mã số 100."]),
+R("Tài sản dài hạn",BS,["Gồm tài sản cố định, bất động sản đầu tư, đầu tư tài chính dài hạn. Mã số 200."]),
+R("Nợ phải trả",BS,["Nợ ngắn hạn và nợ dài hạn. Mã số 300."]),
+R("Vốn chủ sở hữu",BS,["Vốn góp, lợi nhuận sau thuế chưa phân phối. Mã số 400."]),
+R("Cấu trúc bảng cân đối",BS,["Tài sản = Nợ phải trả + Vốn chủ sở hữu.","Tổng tài sản (mã 270) bằng Tổng nguồn vốn (mã 440)."])]],
+["Lợi Nhuận","Báo cáo kết quả kinh doanh",[R("Từ doanh thu đến lợi nhuận",BS,["Doanh thu thuần (mã 10) → Lợi nhuận gộp (20) → Lợi nhuận thuần từ HĐKD (30) → Lợi nhuận trước thuế (50) → Lợi nhuận sau thuế (60).","Lợi nhuận gộp = Doanh thu thuần − Giá vốn hàng bán (mã 11)."])]],
+["Dòng Tiền","Báo cáo lưu chuyển tiền tệ",[R("Ba dòng tiền",BS,["Từ hoạt động kinh doanh (mã 20), đầu tư (30), tài chính (40). Lưu chuyển tiền thuần trong kỳ: mã 50.","Lợi nhuận dương nhưng dòng tiền kinh doanh âm kéo dài là điểm cần xem xét."])]],
+["Chỉ Số","Các chỉ số tài chính",[R("Chỉ số thường dùng",BS,["EPS = Lợi nhuận sau thuế / số cổ phiếu lưu hành. P/E = Giá / EPS. P/B = Giá / giá trị sổ sách mỗi cổ phiếu.","ROE = LNST / Vốn chủ sở hữu. ROA = LNST / Tổng tài sản.","Thanh toán hiện hành = Tài sản ngắn hạn / Nợ ngắn hạn. D/E = Nợ / Vốn chủ."])]],
+["Doanh Nghiệp","Hoạt động và mô hình kinh doanh",[R("Đọc mô hình kinh doanh",BS,["Doanh thu đến từ đâu, khách hàng nào, lợi thế cạnh tranh là gì, biên lợi nhuận ổn định không."])]],
+["Định Giá","Các phương pháp định giá",[R("Định giá cổ phiếu",BS,["So sánh P/E, P/B với doanh nghiệp cùng ngành.","DCF: chiết khấu dòng tiền tương lai. DDM: chiết khấu cổ tức."])]],
+["Ngành","Ngành và môi trường kinh doanh",[R("Phân tích ngành",BS,["Chu kỳ ngành, quy mô và tăng trưởng, cạnh tranh, chính sách. Cách tiếp cận từ trên xuống: kinh tế vĩ mô → ngành → doanh nghiệp (SSI Ngày 1)."])]]]},
+{id:"vc",n:"Vân Các",en:"The Art of Market Movement",d:"Phân tích kỹ thuật theo bốn buổi SSI và SSI Notebook.",x:1150,y:410,ac:[248,240,222],gc:"#b59a58",
+h:[
+["Khai Thị","Nhập môn phân tích kỹ thuật",[
+R("Bản chất PTKT",N1,["Phương pháp dự báo xu hướng giá qua dữ liệu thị trường quá khứ, chủ yếu là giá và khối lượng.","Gồm bốn mảng: đọc nến Nhật, xác định xu hướng, nhận diện mẫu hình, chỉ báo kỹ thuật.","Công cụ hỗ trợ, không phương pháp nào đảm bảo lợi nhuận 100%."]),
+R("6 giả định của PTKT",N1,["1. Giá được xác định bởi cung cầu.","2. Giá phản ánh mọi thông tin kỳ vọng.","3. Giá không di chuyển ngẫu nhiên.","4. Tâm lý tạo quán tính tác động lên giá.","5. Fractal nature: cấu trúc giá lặp lại ở nhiều khung thời gian.","6. Lịch sử có xu hướng lặp lại."]),
+R("Ưu và nhược điểm",N1,["Ưu: giúp xác định thời điểm mua bán; cho kết quả nhanh, không cần nhiều kiến thức tài chính.","Nhược: dựa trên xác suất nên không tuyệt đối; mang tính chủ quan, hai nhà phân tích có thể đưa ra hai kịch bản; có thể bị tạo tín hiệu giả gây nhiễu."]),
+R("PTCB và PTKT",N1,["Bản chất: PTCB ước tính giá trị hợp lý; PTKT nghiên cứu cung cầu, giá, khối lượng.","Kỹ năng: PTCB cần kinh tế vĩ mô, ngành, doanh nghiệp; PTKT cần hiểu chỉ báo, mẫu hình, nhạy với vận động giá.","Thời hạn: PTCB trung và dài hạn; PTKT ngắn hạn."]),
+R("Xu hướng",N1,["Trend is your friend: xác định xu hướng và ride the trend đến hết xu hướng.","Ba xu hướng: uptrend, downtrend, sideways. Xác định bằng cách nối đỉnh với đỉnh, đáy với đáy.","Uptrend: đỉnh sau và đáy sau cao hơn trước; hỗ trợ quan trọng hơn vì cần tìm điểm vào.","Downtrend: đỉnh sau và đáy sau thấp hơn trước; kháng cự quan trọng hơn vì cần tìm điểm ra."],{p:[[0,10],[12,35],[22,25],[35,55],[45,42],[58,75],[68,62],[80,95]],c:"Uptrend: đỉnh và đáy cao dần"}),
+R("Vai trò của khối lượng",N1,["Volume đi trước giá; dùng để confirm breakout, pullback, throwback có đáng tin không.","Volume tăng: thị trường hứng thú, thanh khoản cao, thường gặp khi xu hướng mới hình thành (phá sideway).","Volume thấp: chưa ổn định, kém thanh khoản hoặc đang sideway.","Giá tăng + volume tăng: tăng mạnh. Giá tăng + volume giảm: tăng yếu, sắp đảo chiều.","Giá giảm + volume giảm: giảm yếu, sắp đảo chiều. Giá giảm + volume tăng: giảm mạnh."])]],
+["Nến Nguyệt","Biểu đồ nến Nhật",[
+R("Cấu tạo nến",N2+" · "+NB,["Thân nến: giá mở cửa và đóng cửa. Bóng nến: giá cao nhất và thấp nhất.","Nến tăng (xanh): Close > Open. Nến giảm (đỏ): Close < Open.","Giá tham chiếu = giá đóng cửa hôm trước; HOSE: trần +7%, sàn −7%.","Theo Steve Nison, biểu đồ nến ra đời khoảng năm 1850 bởi Homma."],"build"),
+R("Các mẫu nến đơn",NB,["Chọn một mẫu để xem cấu tạo, ý nghĩa và so sánh hai mẫu."],"pat"),
+R("Nến đảo chiều",N2,["Bullish Engulfing: sau giảm, nến tăng mở thấp hơn và đóng cao hơn thân nến giảm liền trước. Bóng rất ít.","Bearish Engulfing: sau tăng, nến giảm bao trùm nến tăng liền trước.","Piercing Line: sau giảm, nến tăng mở thấp hơn đóng cửa hôm trước và đóng cao hơn mức giữa nến giảm trước.","Dark Cloud Cover: sau tăng, nến giảm mở cao hơn và đóng thấp hơn mức giữa nến tăng trước.","Morning Star (3 nến, sau giảm): nến giảm thân dài, nến thân ngắn, nến tăng đóng trên nửa nến đầu.","Evening Star (3 nến, sau tăng): nến tăng thân dài, nến thân ngắn, nến giảm đóng dưới nửa nến đầu."]),
+R("Nến tiếp diễn và lưỡng lự",N2,["Rising Three Methods (5 nến): nến tăng mạnh, ba nến nhỏ giảm không vượt đáy nến 1, nến 5 tăng mạnh đóng cao hơn nến 1.","Falling Three Methods: ngược lại trong xu hướng giảm.","Marubozu tiếp diễn: lực mua (hoặc bán) áp đảo; xuất hiện ở đáy (đỉnh) có thể báo đảo chiều.","Spinning Top: thân nhỏ, bóng dài hai phía, do dự; cần tín hiệu khác xác nhận.","Harami: nến 2 nhỏ nằm trọn trong thân nến 1; cho thấy xu hướng suy yếu, cần nến sau xác nhận."]),
+R("Gộp nến",NB,["Nhiều nến nhỏ cùng chiều tăng gộp lại thành một Marubozu tăng: Open = Open C1, Close = Close C4, High ≈ Close C4, Low ≈ Open C1.","Kết quả: thân đặc, không râu; lực mua áp đảo và liên tục. Dùng khi giá phá vỡ kháng cự.","Điều kiện: nến nhỏ cùng chiều, bóng ngắn, khối lượng tăng dần hoặc ổn định. Sau tăng dài có thể là lực tăng kiệt sức.","Marubozu giảm gộp ngược lại: cẩn thận lực bán cuối sau giảm dài."])]],
+["Thiên Cơ","Chỉ báo kỹ thuật",[
+R("Bản chất chỉ báo",N2,["Tính từ dữ liệu giá và khối lượng; hiển thị như biểu đồ để xác định xu hướng tiếp theo.","Ba nhóm: xu hướng (MA, ADX, MACD), động lượng (RSI, Stochastics), biến động (Bollinger Bands)."]),
+R("Đường trung bình MA",N2,["MA10 = tổng giá đóng cửa 10 phiên chia 10.","Giá cắt lên MA: xu hướng tăng. Giá cắt xuống MA: xu hướng giảm.","MA ngắn cắt lên MA dài (ví dụ MA50 cắt MA200) là tín hiệu tăng.","Hiệu quả hơn trong thị trường có xu hướng."],{p:[[0,30],[12,40],[22,35],[34,55],[46,50],[60,72],[72,66],[85,88],[100,92]],c:"Giá và đường MA cùng hướng lên"}),
+R("RSI",N2,["RSI = 100 − 100/(1 + RS); trong khoảng 0–100.","Trên 70 quá mua, dưới 30 quá bán; trên 50 thường là uptrend, dưới 50 là downtrend.","Uptrend mạnh: nâng vùng theo dõi lên 40–90. Downtrend mạnh: hạ xuống 20–60.","Phân kỳ: giá tạo đỉnh cao mới nhưng RSI đỉnh thấp hơn (hoặc giá đáy thấp mới nhưng RSI đáy cao hơn)."]),
+R("Bollinger Bands",N2,["Dải giữa SMA20; dải trên = SMA20 + 2 độ lệch chuẩn; dải dưới = SMA20 − 2 độ lệch chuẩn. Thường khoảng 95% giá nằm trong hai dải.","Bands chủ yếu xác định khởi đầu xu thế mới hơn là vùng mua bán.","Dải thắt chặt (nút cổ chai): biến động thấp, dự báo sắp biến động mạnh nhưng không cho biết hướng.","Phá vỡ biên: giao dịch thuận hướng phá vỡ."]),
+R("Kết hợp nến và chỉ báo",N2,["Nến tăng mạnh cắt lên chỉ báo: xác nhận xu hướng tăng. Ví dụ Bullish Engulfing cắt lên MA20 + MACD cắt lên: tín hiệu mua.","Nến giảm mạnh cắt xuống chỉ báo: xác nhận giảm. Ví dụ Bearish Marubozu cắt xuống MA50 + RSI dưới 50: tín hiệu bán.","Nến lưỡng lự cắt qua chỉ báo: tín hiệu yếu, chờ xác nhận. Ví dụ Doji cắt lên RSI nhưng MACD chưa cắt.","Xác nhận bằng nhiều yếu tố, kết hợp trendline và khung thời gian lớn hơn."])]],
+["Đồ Thị","Mô hình giá",[
+R("Bản chất mô hình giá",N3,["Cấu trúc hình học đặc trưng trên biểu đồ giá, phản ánh tâm lý và hành động của nhà đầu tư trong quá khứ.","Vai trò: xác định xu hướng, dự đoán điểm vào/thoát lệnh, hỗ trợ quản lý rủi ro.","Xếp hạng Bulkowski: High and tight flag (break up) đứng đầu, trung bình tăng 69%, 90% đạt giá mục tiêu."]),
+R("Cốc tay cầm",N3,["Mô hình tiếp diễn: cần đợt tăng trước đó (tối thiểu 30%).","Cốc: đáy hình chữ U tin cậy hơn chữ V; độ sâu thường 12–33%, có thể 40–50%; vượt 50% thường thất bại.","Tay cầm: 1–2 tuần, điều chỉnh khoảng 1/3 thân cốc và không vượt 1/2; volume phải nhỏ."],{p:[[0,85],[10,70],[22,45],[35,35],[48,38],[60,50],[72,75],[80,82],[86,70],[92,72],[100,95]],h:[[83,"Miệng cốc"]],c:"Cốc rồi tay cầm, sau đó bứt phá"}),
+R("Cờ đuôi nheo",N3,["Gồm cột cờ (giá tăng hoặc giảm mạnh), giai đoạn củng cố hình tam giác, rồi phá vỡ.","Tăng giá: mua khi bứt phá lên trên cờ đuôi nheo. Giảm giá: bán khi phá xuống dưới."],{p:[[0,10],[30,80],[40,62],[48,74],[56,66],[62,70],[75,95],[100,100]],c:"Cột cờ, củng cố, bứt phá"}),
+R("Hai đáy và hai đỉnh",N3,["2 đáy (chữ W) cuối xu hướng giảm báo đảo chiều tăng; 2 đỉnh (chữ M) cuối xu hướng tăng báo đảo chiều giảm.","Không hành động trước khi giá phá vỡ neckline vì tỷ lệ thất bại khá cao.","Khoảng cách hai đáy/đỉnh càng lớn thì xác suất thành công càng cao; tích lũy gần neckline thì khả năng breakout cao hơn.","Lỡ điểm mua: đợi pullback và retest lại vùng hỗ trợ mới.","Hai đỉnh kém hiệu quả trong xu hướng tăng mạnh; hai đáy dễ thất bại trong xu hướng giảm mạnh."],{p:[[0,90],[25,20],[45,60],[65,20],[85,85],[100,95]],h:[[60,"Neckline"]],c:"Hai đáy (chữ W)"}),
+R("Vai đầu vai",N3,["Thuận: ba đỉnh ở đỉnh xu hướng tăng (vai trái, đầu cao nhất, vai phải thấp hơn đầu). Chờ giá phá neckline mới khẳng định đảo chiều giảm.","Ngược: ba đáy trong xu hướng giảm (đầu sâu nhất); mua khi giá phá vỡ neckline.","Khả năng sinh lời cao nhưng chỉ khi mô hình đã hình thành."],{p:[[0,10],[15,60],[25,40],[40,90],[55,40],[70,60],[85,10],[100,0]],h:[[40,"Neckline"]],c:"Vai đầu vai thuận"}),
+R("Mô hình VCP",N3,["Volatility Contraction Pattern: biên độ biến động thu hẹp dần.","Cần xu hướng tăng trước đó (theo Minervini tối thiểu 30%).","Thường 2T–4T (T là một lần thu hẹp), có thể tới 5T–6T. Lý tưởng: lần thu hẹp sau bằng 1/2 lần trước.","Khối lượng giảm dần sau mỗi lần biến động: lực cung cạn kiệt."],{p:[[0,20],[15,90],[35,62],[50,80],[62,66],[72,74],[82,68],[90,71],[100,95]],c:"Các lần thu hẹp: −31%, −17%, −8%, −3%"})]],
+["Sơn Hà","Kháng cự và hỗ trợ",[
+R("Vùng hỗ trợ và kháng cự",N1+" · "+NB,["Kháng cự: vùng lực bán mạnh lên, giá chạm vào thường bị đẩy xuống. Hỗ trợ: vùng lực mua mạnh lên, giá chạm vào thường bật lại.","Là vùng giá (dải), không phải đường tuyệt đối; vẽ qua các đỉnh và đáy cũ.","Càng nhiều lần chạm và bật lại, vùng càng được thị trường công nhận.","Giá nằm giữa hai vùng: thị trường đi ngang (sideway)."],{p:[[0,40],[10,70],[20,45],[32,80],[44,30],[56,80],[68,30],[80,80],[92,58]],h:[[80,"Kháng cự","#d0453d"],[30,"Hỗ trợ","#2e9e6a"]],c:"Giá dao động giữa kháng cự và hỗ trợ"}),
+R("Độ mạnh của vùng",N1,["Đi qua nhiều điểm, tồn tại lâu và càng gần thì càng mạnh.","Vùng nằm ngang mạnh hơn trendline và đường Fibonacci. Gap là vùng hỗ trợ/kháng cự mạnh.","Uptrend: hỗ trợ mạnh hơn kháng cự (cầu mạnh hơn cung), downtrend ngược lại.","Khối lượng quan trọng khi xác định vùng và khi vùng bị phá vỡ."]),
+R("Phá vỡ và đổi vai trò",NB,["Phá vỡ: giá đóng cửa vượt hẳn kháng cự, tốt nhất kèm khối lượng tăng mạnh.","Retest: giá quay về chạm vùng cũ. Kháng cự cũ thành hỗ trợ mới (và ngược lại).","Giữ được hỗ trợ mới rồi bật lên: phá vỡ thật. Rơi trở lại dưới vùng cũ: phá vỡ giả.","Dùng giá đóng cửa và khối lượng để lọc, không chỉ dựa vào bóng nến."],{p:[[0,15],[10,50],[18,35],[28,50],[36,30],[46,48],[56,85],[64,92],[72,68],[82,92],[100,100]],h:[[70,"Kháng cự cũ → hỗ trợ mới"]],c:"Phá vỡ, kiểm tra lại, bật tăng"}),
+R("Ba kịch bản",NB,["1. Bị từ chối: râu trên dài hoặc nến đảo chiều (Shooting Star, Doji bia mộ, Dark Cloud) tại kháng cự, nến sau xác nhận giảm, giá về hỗ trợ gần.","2. Phá vỡ thật: Marubozu đóng hẳn trên kháng cự, volume tăng vọt, 1–2 nến sau giữ trên vùng cũ. Mục tiêu thường bằng chiều cao vùng tích lũy cộng từ điểm phá vỡ.","3. Phá vỡ giả (bull trap): nến vượt có thân nhỏ, râu trên dài, volume thấp, nến sau giảm dài đóng dưới kháng cự; người mua đuổi bị kẹt, lệnh cắt lỗ tạo áp lực bán.","Chờ nến đóng cửa, không kết luận khi nến còn chạy."])]],
+["Tuyển Cổ","Lựa chọn cổ phiếu",[
+R("Quy trình phân tích",N4+" (tổng hợp 4 buổi)",["Bốn kỹ năng cần nắm: đọc nến Nhật, xác định xu hướng, nhận diện mẫu hình, chỉ báo kỹ thuật.","Trình tự gợi ý từ các buổi: xu hướng → vùng hỗ trợ/kháng cự → mẫu hình và nến → chỉ báo và khối lượng xác nhận → kế hoạch cắt lỗ."]),
+R("Dùng bao nhiêu chỉ báo",N4,["Đừng tích lũy thật nhiều công cụ: hãy luyện thật sâu vài công cụ phù hợp (tinh thần câu nói của Lý Tiểu Long trong slide).","Xác nhận bằng nhiều yếu tố nhưng tránh tín hiệu nhiễu (SSI Ngày 2)."]),
+R("Quản trị rủi ro",N4,["Rủi ro không thể triệt tiêu hoàn toàn nhưng có cách đối phó.","Tuân thủ nguyên tắc và kỷ luật để tránh quyết định theo cảm xúc.","Đa dạng hóa danh mục để tránh tập trung vào một ngành hay một cổ phiếu."]),
+R("Sai lầm thường gặp",N4,["1. Không cắt lỗ (hold to die). Lỗ 10% cần lãi 11,1% để hoàn vốn; lỗ 20% cần 25%; lỗ 30% cần 42,9%; lỗ 50% cần 100%.","2. Mua cổ phiếu trên đà giảm (bắt dao rơi): giảm nhiều chưa chắc đã rẻ.","3. Mua bán theo tin đồn.","4. Vốn không ổn định (vay ngân hàng, margin): áp lực lãi vay làm méo quyết định.","5. Xem bảng điện quá nhiều."])]]]},
+{id:"td",n:"Tinh Đình",en:"The Sanctuary of Mastery",d:"Ôn tập và kiểm tra từ tài liệu SSI.",x:1300,y:790,ac:[240,236,248],gc:"#6f6aa6",
+h:[
+["Ghi Nhớ","Ôn tập lý thuyết",[R("Tóm tắt Vân Các",N1+" – "+N4,["6 giả định PTKT · 3 xu hướng · volume đi trước giá.","Nến: thân (mở/đóng), bóng (cao/thấp); đảo chiều, tiếp diễn, lưỡng lự.","Chỉ báo: xu hướng, động lượng, biến động. RSI 70/30, Bollinger SMA20 ± 2σ.","Mô hình: cốc tay cầm, cờ đuôi nheo, 2 đáy/đỉnh, vai đầu vai, VCP.","Rủi ro: cắt lỗ, đa dạng hóa, không bắt dao rơi."])]],
+["Thử Thách","Trắc nghiệm kiến thức",[R("Trắc nghiệm 7 câu",N1+" – "+N4,[],"quiz")]],
+["Giải Mã","Phân tích tình huống",[R("Tình huống",BS,["Đang chờ thêm tài liệu để tạo tình huống bám sát nội dung gốc."])]],
+["Thực Chiến","Đọc biểu đồ và báo cáo",[R("Thực chiến",BS,["Đang chờ ảnh biểu đồ và báo cáo từ tài liệu."])]],
+["Tổng Kết","Đánh giá năng lực",[R("Đánh giá",BS,["Điểm và tiến độ hiển thị ở thanh trên cùng; phần đánh giá chi tiết sẽ làm ở phase sau."])]]]}];
+const P={"Marubozu tăng":{k:[12,88,12,88],t:"Thân xanh rất dài, gần như không bóng. Phe mua kiểm soát từ lúc mở đến lúc đóng cửa. Dùng: xác nhận đà tăng, cẩn thận ở vùng đỉnh."},
+"Marubozu giảm":{k:[88,88,12,12],t:"Thân đỏ rất dài, gần như không bóng. Phe bán kiểm soát cả phiên. Dùng: xác nhận đà giảm, cẩn thận ở vùng đáy."},
+"Doji":{k:[50,82,18,50],t:"Open ≈ Close, thân mỏng như dấu cộng. Mua bán giằng co, thị trường lưỡng lự. Quan trọng sau xu hướng dài, chờ nến xác nhận."},
+"Spinning Top":{k:[46,80,20,56],t:"Thân nhỏ, bóng trên và dưới khá dài. Hai phe cân bằng, đà xu hướng yếu đi. Cảnh báo chững lại, chưa chắc đảo chiều."},
+"Hammer":{k:[72,78,12,76],t:"Thân nhỏ ở trên, bóng dưới ≥ 2 lần thân. Giá bị đẩy xuống mạnh rồi kéo ngược lên. Sau đà giảm gợi ý đáy, cần nến tăng xác nhận."},
+"Shooting Star":{k:[28,88,22,24],t:"Thân nhỏ ở dưới, bóng trên ≥ 2 lần thân. Giá bị đẩy lên cao rồi bị bán xuống. Sau đà tăng gợi ý đỉnh, cần nến giảm xác nhận."},
+"Dragonfly Doji":{k:[84,84,14,84],t:"Open = Close = High, bóng dưới rất dài. Bán mạnh trong phiên nhưng giá hồi về đỉnh. Ở đáy hoặc hỗ trợ gợi ý đảo chiều tăng."},
+"Gravestone Doji":{k:[16,86,16,16],t:"Open = Close = Low, bóng trên rất dài. Mua đẩy giá lên nhưng bị bán đè về đáy. Ở đỉnh hoặc kháng cự gợi ý đảo chiều giảm."}};
+const Q=[["Đặc điểm của xu hướng tăng (uptrend)?",["Đỉnh sau và đáy sau cao hơn đỉnh và đáy trước","Đỉnh sau thấp hơn đỉnh trước","Giá đi ngang giữa hai vùng"],0,"Ngày 1: uptrend có đỉnh sau cao hơn đỉnh trước và đáy sau cao hơn đáy trước."],
+["Giá tăng nhưng volume giảm cho thấy điều gì?",["Xu hướng tăng mạnh","Xu hướng tăng yếu, có thể sắp đảo chiều","Thị trường đi ngang chắc chắn"],1,"Ngày 1: giá tăng, vol giảm là xu hướng tăng yếu, sắp đảo chiều."],
+["Hammer có đặc điểm nào?",["Thân nhỏ ở trên, bóng dưới ≥ 2 lần thân","Thân dài không bóng","Bóng trên dài, thân nhỏ ở dưới"],0,"SSI Notebook: Hammer có thân nhỏ ở trên và bóng dưới ≥ 2 lần thân."],
+["Công thức RSI và ngưỡng quá mua?",["RSI = 100 − 100/(1+RS); quá mua > 70","RSI = SMA20 ± 2σ; quá mua > 50","RSI = tổng giá/10; quá mua > 30"],0,"Ngày 2: RSI = 100 − 100/(1+RS), trên 70 quá mua, dưới 30 quá bán."],
+["Dải Bollinger thắt chặt thường cho biết gì?",["Giá chắc chắn tăng","Biến động thấp, có thể sắp biến động mạnh nhưng chưa rõ hướng","Giá chắc chắn giảm"],1,"Ngày 2: thắt nút cổ chai báo hiệu biến động mạnh sắp tới nhưng không cho biết hướng."],
+["Dấu hiệu phá vỡ giả (bull trap)?",["Marubozu đóng hẳn trên kháng cự với volume tăng vọt","Nến vượt có thân nhỏ, râu trên dài, volume thấp, nến sau đóng lại dưới kháng cự","Giá giữ trên vùng cũ 2 nến"],1,"SSI Notebook, kịch bản 3."],
+["Lỗ 50% vốn cần lãi bao nhiêu để hoàn vốn?",["50%","75%","100%"],2,"Ngày 4: lỗ 50% phải lãi 100% mới hoàn vốn (cần lãi = lỗ/(1 − lỗ))."]];
+const done=new Set();let tot=0;V.forEach(v=>v.h.forEach(h=>tot+=h[2].length));
+/* ============ CẢNH ============ */
+const S=document.getElementById("scene"),W=1600,H=1000;let sd=11;const rnd=()=>(sd=sd*16807%2147483647)/2147483647;
+const sh=(c,k)=>c.map(v=>Math.round(v*k)),rgb=c=>`rgb(${c})`,poly=(p,f,x="")=>`<polygon points="${p.map(a=>a.join(",")).join(" ")}" fill="${f}" ${x}/>`;
+function box(x,y,w,d,h,b){const F=[x,y],L=[x-d,y-d/2],R=[x+w,y-w/2],B=[x+w-d,y-w/2-d/2],u=p=>[p[0],p[1]-h];return poly([F,L,u(L),u(F)],rgb(sh(b,.86)))+poly([F,R,u(R),u(F)],rgb(sh(b,.97)))+poly([u(F),u(L),u(B),u(R)],rgb(b))}
+function glass(A,B,h,u0,u1,v0,v1){const p=(u,v)=>[A[0]+(B[0]-A[0])*u,A[1]+(B[1]-A[1])*u-h*v];return poly([p(u0,v0),p(u1,v0),p(u1,v1),p(u0,v1)],"",'class="glow"')}
+function villa(v){const{x,y}=v;let s=`<g class="villa" tabindex="0" role="button" aria-label="Villa ${v.n}" data-id="${v.id}"><ellipse cx="${x+20}" cy="${y+16}" rx="130" ry="46" fill="#0a1d15" opacity=".35"/>`;
+ s+=box(x,y,120,84,52,[244,241,232]);const F=[x,y],L=[x-84,y-42],R=[x+120,y-60];
+ s+=glass(F,L,52,.12,.42,.2,.78)+glass(F,L,52,.56,.88,.2,.78)+[.08,.46,.82].map((u,i)=>glass(F,R,52,u,[.36,.74,.94][i],.2,.78)).join("");
+ const x2=x+14,y2=y-59;s+=box(x2,y2,84,60,44,[250,248,241])+glass([x2,y2],[x2-60,y2-30],44,.15,.8,.25,.8)+glass([x2,y2],[x2+84,y2-42],44,.1,.45,.25,.8)+glass([x2,y2],[x2+84,y2-42],44,.55,.9,.25,.8)+box(x2-6,y2-44,96,68,5,[226,222,210]);
+ return s+`<rect x="${x-50}" y="${y+26}" width="140" height="22" rx="3" fill="#f6f3ea" opacity=".95"/><text x="${x+20}" y="${y+42}" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="16" font-weight="600" fill="#1b2a22">${v.n}</text></g>`}
+function hut(v,i,x,y){return `<g class="hs" tabindex="0" role="button" aria-label="Nhà ${v.h[i][0]}" data-v="${v.id}" data-i="${i}">`+box(x-8,y,38,28,22,v.ac)+glass([x-8,y],[x-36,y-14],22,.2,.8,.3,.8)+glass([x-8,y],[x+30,y-19],22,.2,.8,.3,.8)+box(x-11,y-22,44,34,3,sh(v.ac,.8))+`<text x="${x+10}" y="${y+14}" text-anchor="middle">${v.h[i][0]}</text></g>`}
+function tree(x,y,k){return `<g class="sway" style="animation-delay:${(rnd()*4).toFixed(1)}s"><rect x="${x-2*k}" y="${y-8*k}" width="${4*k}" height="${10*k}" fill="#4a3a2a"/><ellipse cx="${x}" cy="${y-22*k}" rx="${16*k}" ry="${22*k}" fill="#1f5b3d"/><ellipse cx="${x-4*k}" cy="${y-30*k}" rx="${11*k}" ry="${15*k}" fill="#2a7048"/><ellipse cx="${x+5*k}" cy="${y-38*k}" rx="${7*k}" ry="${9*k}" fill="#347a52"/></g>`}
+const swan=(d,b)=>`<g><path d="M0 0 q8 0 12 -3 q-3 -7 -1 -11" stroke="#fff" stroke-width="3" fill="none"/><ellipse cx="0" cy="0" rx="12" ry="6" fill="#fff"/><circle cx="11" cy="-14" r="2.4" fill="#fff"/><path d="M13 -14 l5 1" stroke="#f08a24" stroke-width="2"/><animateMotion dur="${d}s" begin="${b}s" repeatCount="indefinite" path="M-120 0 a120 34 0 1 1 240 0 a120 34 0 1 1 -240 0"/></g>`;
+const deer=`<g class="critter" data-c="td"><ellipse cx="0" cy="0" rx="16" ry="8" fill="#a8774a"/><path d="M-10 6v14M-4 6v14M6 6v14M12 6v14M12 -3l8 -14" stroke="#8a5f38" stroke-width="2.6" fill="none"/><circle cx="21" cy="-18" r="5" fill="#a8774a"/><path d="M19 -22l-4 -9m6 8l3 -10" stroke="#6d4a2a" stroke-width="1.5"/><animateMotion dur="26s" repeatCount="indefinite" path="M0 0 q60 20 120 0 t120 -10 t-120 -10 t-120 20"/></g>`;
+function build(){let s=`<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--s1)"/><stop offset="1" style="stop-color:var(--s2)"/></linearGradient><radialGradient id="gr" cx="50%" cy="55%" r="75%"><stop offset="0" stop-color="#3d8a58"/><stop offset="1" stop-color="#16422c"/></radialGradient></defs>`;
+ s+=`<rect x="-400" y="-500" width="2400" height="740" fill="url(#sk)"/>`;
+ for(let i=0;i<170;i++)s+=`<circle class="star" cx="${-300+rnd()*2200}" cy="${-450+rnd()*620}" r="${(.5+rnd()*1.4).toFixed(1)}" fill="#fff" style="animation-delay:${(rnd()*3).toFixed(1)}s"/>`;
+ s+=`<g class="moon"><circle cx="1400" cy="60" r="60" fill="#dfe8ff" opacity=".12"/><circle cx="1400" cy="60" r="26" fill="#f4f1de"/><circle cx="1409" cy="54" r="22" fill="var(--s1)" opacity=".0"/></g><g class="sun"><circle cx="300" cy="70" r="30" fill="#fff3b0"/></g>`;
+ [[200,70],[700,40],[1150,90]].forEach(c=>s+=`<g class="cloud"><ellipse cx="${c[0]}" cy="${c[1]}" rx="70" ry="16" fill="#fff" opacity=".9"/><ellipse cx="${c[0]+30}" cy="${c[1]-12}" rx="40" ry="14" fill="#fff" opacity=".9"/></g>`);
+ s+=`<path d="M-400 215 Q-100 110 200 190 T800 165 T1400 185 T2000 150 V300 H-400Z" fill="#0f2a22"/><path d="M-400 235 Q0 170 300 220 T900 205 T1500 215 T2000 200 V300 H-400Z" fill="#17402e"/><rect x="-400" y="225" width="2400" height="900" fill="url(#gr)"/>`;
+ V.forEach(v=>s+=`<ellipse cx="${v.x+20}" cy="${v.y+60}" rx="320" ry="175" fill="${v.gc}" opacity=".3"/><ellipse cx="${v.x+20}" cy="${v.y+60}" rx="320" ry="175" fill="none" stroke="#e9f1dc" stroke-opacity=".35" stroke-width="2.5" stroke-dasharray="2 7"/>`);
+ const path=d=>s+=`<path d="${d}" fill="none" stroke="#e8dfc9" stroke-width="12" stroke-linecap="round" opacity=".9"/><path d="${d}" fill="none" stroke="#bdb092" stroke-width="1.6" stroke-dasharray="3 9"/>`;
+ path("M320 700 Q520 830 800 750");path("M690 450 Q740 620 810 720");path("M1140 470 Q1000 640 890 720");path("M1290 830 Q1100 830 920 760");
+ V.forEach(v=>{const n=v.h.length,cx=v.x+20,cy=v.y+40;v.p=v.h.map((_,i)=>{const a=(15+150*i/(n-1))*Math.PI/180;return[cx+230*Math.cos(a),cy+125*Math.sin(a)]});v.p.forEach(p=>s+=`<path d="M${v.x+20} ${v.y+50} Q${(v.x+20+p[0])/2} ${(v.y+50+p[1])/2+10} ${p[0]+10} ${p[1]+10}" fill="none" stroke="#e8dfc9" stroke-width="3.5" opacity=".7"/>`)});
+ s+=`<path d="M700 905 C860 960 1100 950 1420 990" fill="none" stroke="#6fb8b3" stroke-width="16" opacity=".85" stroke-linecap="round"/><ellipse cx="520" cy="905" rx="200" ry="66" fill="#3f8a92"/><ellipse cx="520" cy="900" rx="188" ry="58" fill="#5fb0b2"/>`;
+ [0,1.3,2.6].forEach(d=>s+=`<ellipse class="rip" cx="520" cy="902" rx="90" ry="30" fill="none" stroke="#e8fffb" stroke-width="1.4" style="animation-delay:${d}s"/>`);
+ s+=`<g transform="translate(520 905)">${swan(34,0)}${swan(40,-15)}</g><path d="M430 912 Q520 862 612 912" fill="none" stroke="#7a5a3a" stroke-width="7" stroke-linecap="round"/><path d="M430 912 Q520 862 612 912" fill="none" stroke="#c9a46a" stroke-width="2"/>`;
+ [[420,930],[610,935],[560,950]].forEach(p=>s+=`<ellipse cx="${p[0]}" cy="${p[1]}" rx="9" ry="4" fill="#4f9a5a"/>`);
+ s+=`<ellipse cx="850" cy="735" rx="105" ry="52" fill="#d9d1bc"/><ellipse cx="850" cy="735" rx="95" ry="45" fill="#efe9d8"/><ellipse cx="850" cy="732" rx="58" ry="25" fill="#9ccbd0"/><ellipse cx="850" cy="730" rx="50" ry="21" fill="#5fb0b8"/><rect x="846" y="700" width="8" height="30" fill="#efe9d8"/><ellipse cx="850" cy="700" rx="14" ry="5" fill="#efe9d8"/>`;
+ for(let k=-2;k<=2;k++)s+=`<path class="jet" d="M850 698 q${k*13} ${-(36-Math.abs(k)*6)} ${k*26} ${30}" fill="none" stroke="#cdeeff" stroke-width="1.8"/>`;
+ [0,1.5].forEach(d=>s+=`<ellipse class="rip" cx="850" cy="731" rx="36" ry="14" fill="none" stroke="#fff" stroke-width="1.2" style="animation-delay:${d}s"/>`);
+ const items=[];V.forEach(v=>{items.push([v.y+30,villa(v)]);v.p.forEach((p,i)=>items.push([p[1],hut(v,i,p[0],p[1])]))});
+ let n=0;while(n++<1500&&items.length<330){const x=-200+rnd()*2000,y=235+rnd()*820;if(V.some(v=>((x-v.x-20)/340)**2+((y-v.y-60)/195)**2<1)||((x-850)/150)**2+((y-735)/80)**2<1||((x-520)/230)**2+((y-905)/90)**2<1)continue;items.push([y,tree(x,y,.8+rnd()*.7)])}
+ items.sort((a,b)=>a[0]-b[0]);s+=items.map(a=>a[1]).join("");
+ for(let i=0;i<50;i++){const x=rnd()*1600,y=560+rnd()*420;s+=`<circle cx="${x}" cy="${y}" r="2.4" fill="${["#f7c8d6","#fff3a8","#fff"][i%3]}"/>`}
+ V.forEach(v=>s+=`<rect x="${v.x+96}" y="${v.y+26}" width="2" height="24" fill="#555"/><circle cx="${v.x+97}" cy="${v.y+24}" r="4" class="glow"/>`);
+ s+=`<g class="critter" data-c="nl"><ellipse cx="200" cy="560" rx="8" ry="6" fill="#b5723a"/><path d="M206 558 q12 -12 4 -20" stroke="#b5723a" stroke-width="5" fill="none"/><animateTransform attributeName="transform" type="translate" values="0 0;6 -4;0 0" dur="3s" repeatCount="indefinite"/></g>`;
+ s+=`<g class="critter" data-c="bt"><ellipse cx="0" cy="0" rx="9" ry="6" fill="#efe9de"/><ellipse cx="7" cy="-10" rx="2.5" ry="7" fill="#efe9de"/><animateMotion dur="9s" repeatCount="indefinite" path="M560 500 q20 -14 40 0 t40 0 t-40 6 t-40 -6"/></g>`;
+ s+=`<g class="critter" data-c="bt"><ellipse cx="0" cy="0" rx="8" ry="5" fill="#d8d2c4"/><ellipse cx="6" cy="-9" rx="2.2" ry="6" fill="#d8d2c4"/><animateMotion dur="12s" repeatCount="indefinite" path="M780 480 q30 -16 60 0 t60 0 t-60 6 t-60 -6"/></g>`;
+ s+=`<g class="critter" data-c="vc"><path d="M0 0 q6 -8 12 0 q6 -8 12 0" stroke="#3b7fd4" stroke-width="3" fill="none"/><animateMotion dur="14s" repeatCount="indefinite" path="M1050 270 C1160 200 1280 260 1190 330 S1040 330 1050 270"/></g>`;
+ s+=`<g transform="translate(1180 640)">${deer}</g>`;
+ for(let i=0;i<6;i++)s+=`<g><path d="M0 0 q4 -6 8 0 q4 -6 8 0" stroke="#1d2b25" stroke-width="2" fill="none"/><animateMotion dur="${22+i*3}s" begin="-${i*5}s" repeatCount="indefinite" path="M-60 ${230+i*40} C400 ${160+i*30} 900 ${300+i*30} 1700 ${200+i*40}"/></g>`;
+ for(let i=0;i<5;i++)s+=`<g><circle r="3" fill="#ffd36e"/><circle cx="4" r="3" fill="#ffb347"/><animateMotion dur="${11+i*2}s" repeatCount="indefinite" path="M${300+i*220} ${560+i*45} q40 -40 80 0 t80 10 t-80 20 t-80 -30"/></g>`;
+ s+=`<rect x="-400" y="-500" width="2400" height="1800" fill="#06122e" style="opacity:var(--ov);pointer-events:none;transition:opacity 1.4s"/>`;S.innerHTML=s}
+build();
+const CR={nl:"Sóc nhỏ: “Mọi hành trình đều bắt đầu từ việc hiểu thị trường vận hành thế nào.”",bt:"Thỏ nhỏ: “Giá là điều bạn trả, giá trị là điều bạn nhận.”",vc:"Chim xanh: “Trend is your friend – hãy tìm xu hướng trước.”",td:"Hươu con: “Thử sức ở Tinh Đình khi bạn muốn biết mình nhớ được gì.”"};
+/* ============ CAMERA ============ */
+let cam,tgt,home;const fit=()=>{const r=innerWidth/innerHeight;return r>W/H?{x:0,y:(H-W/r)/2,w:W,h:W/r}:{x:(W-H*r)/2,y:0,w:H*r,h:H}};
+home=fit();tgt={...home};cam={x:home.x-home.w*.2,y:home.y-home.h*.2,w:home.w*1.4,h:home.h*1.4};
+(function loop(){for(const k of["x","y","w","h"])cam[k]+=(tgt[k]-cam[k])*.07;S.setAttribute("viewBox",`${cam.x} ${cam.y} ${cam.w} ${cam.h}`);requestAnimationFrame(loop)})();
+addEventListener("resize",()=>home=fit());
+let drag=null;const tip=document.getElementById("tip"),panel=document.getElementById("panel"),$=id=>document.getElementById(id);
+S.addEventListener("pointerdown",e=>{if(e.target.closest(".villa,.hs,.critter"))return;drag={x:e.clientX,y:e.clientY};S.classList.add("drag")});
+addEventListener("pointermove",e=>{tip.style.left=Math.min(e.clientX+16,innerWidth-260)+"px";tip.style.top=e.clientY+16+"px";if(!drag)return;const k=tgt.w/S.clientWidth;tgt.x-=(e.clientX-drag.x)*k;tgt.y-=(e.clientY-drag.y)*k;cam.x=tgt.x;cam.y=tgt.y;drag={x:e.clientX,y:e.clientY}});
+addEventListener("pointerup",()=>{drag=null;S.classList.remove("drag")});
+S.addEventListener("wheel",e=>{e.preventDefault();const f=e.deltaY>0?1.12:.89,nw=Math.min(home.w*1.3,Math.max(300,tgt.w*f)),r=tgt.h/tgt.w,m=S.getBoundingClientRect();tgt.x+=(tgt.w-nw)*(e.clientX-m.left)/m.width;tgt.y+=(tgt.w*r-nw*r)*(e.clientY-m.top)/m.height;tgt.w=nw;tgt.h=nw*r},{passive:false});
+function focusV(v){const w=520,h=w*home.h/home.w;tgt={x:v.x+20-w/2-(innerWidth>640?w*.2:0),y:v.y+40-h/2,w,h}}
+/* ============ UI ============ */
+let started=false;const vprog=v=>{let t=0,d=0;v.h.forEach((h,i)=>h[2].forEach((_,j)=>{t++;if(done.has(v.id+i+j))d++}));return t?d/t:0};
+const upd=()=>{$("bar").firstChild.style.width=done.size/tot*100+"%";$("pct").textContent=Math.round(done.size/tot*100)+"%"};
+let tt;const toast=m=>{const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),4200)};
+$("go").onclick=()=>{$("welcome").classList.add("gone");started=true;tgt={...home}};
+$("dn").onclick=e=>{document.body.classList.toggle("night");e.target.textContent=document.body.classList.contains("night")?"Ngày":"Đêm"};
+$("rs").onclick=()=>{panel.classList.remove("open");tgt={...home}};
+const vById=id=>V.find(x=>x.id===id);
+S.addEventListener("pointerover",e=>{const g=e.target.closest(".villa,.hs");if(!g)return;let v,t;if(g.classList.contains("villa")){v=vById(g.dataset.id);t=`<b>${v.n}</b><em>${v.en}</em><div style="margin-top:6px">${v.d}</div><div class="pb"><i style="width:${vprog(v)*100}%"></i></div>`}else{v=vById(g.dataset.v);const h=v.h[+g.dataset.i];t=`<b>Nhà ${h[0]}</b><em>${v.n}</em><div style="margin-top:6px">${h[1]} · ${h[2].length} phòng</div>`}tip.innerHTML=t;tip.style.opacity=1});
+S.addEventListener("pointerout",e=>{if(e.target.closest(".villa,.hs"))tip.style.opacity=0});
+function act(e){const c=e.target.closest(".critter");if(c){toast(CR[c.dataset.c]);return}const hs=e.target.closest(".hs");if(hs){tip.style.opacity=0;const v=vById(hs.dataset.v);focusV(v);openH(v,+hs.dataset.i);return}const g=e.target.closest(".villa");if(g){tip.style.opacity=0;openV(vById(g.dataset.id))}}
+S.addEventListener("click",act);S.addEventListener("keydown",e=>{if(e.key==="Enter")act(e)});
+const icon=i=>`<svg viewBox="0 0 120 64"><polygon points="20,50 60,60 100,50 60,40" fill="#cfe0c9"/><polygon points="30,48 30,24 60,34 60,58" fill="#e4dfd0"/><polygon points="60,58 60,34 92,22 92,46" fill="${["#f4f1e8","#efeadb"][i%2]}"/><polygon points="30,24 60,34 92,22 62,12" fill="#fbf9f2" stroke="#d8d2c0"/><polygon points="66,38 66,50 86,43 86,31" fill="#ffe2a0"/><polygon points="36,34 36,46 54,52 54,40" fill="#ffe2a0"/></svg>`;
+function openV(v){started=true;$("welcome").classList.add("gone");focusV(v);
+ panel.innerHTML=`<button class="back" id="bk">← Toàn cảnh</button><h3>${v.n}</h3><p class="sub">${v.en}</p><p>${v.d}</p><div class="houses">${v.h.map((h,i)=>`<button class="house" data-i="${i}">${icon(i)}<b>Nhà ${h[0]}</b><span>${h[1]}</span></button>`).join("")}</div>`;
+ panel.classList.add("open");panel.scrollTop=0;$("bk").onclick=()=>{panel.classList.remove("open");tgt={...home}};panel.querySelectorAll(".house").forEach(b=>b.onclick=()=>openH(v,+b.dataset.i))}
+function openH(v,i){const h=v.h[i],rs=h[2];panel.classList.add("open");panel.scrollTop=0;
+ panel.innerHTML=`<button class="back" id="bk">← ${v.n}</button><h3>Nhà ${h[0]}</h3><p class="sub">${h[1]}</p>`+rs.map((r,j)=>`<button class="room ${done.has(v.id+i+j)?"done":""}" data-j="${j}"><span>${r.t}</span><small>${done.has(v.id+i+j)?"Đã học":r.w?"Tương tác":"Mở phòng"}</small></button>`).join("");
+ $("bk").onclick=()=>openV(v);panel.querySelectorAll(".room").forEach(b=>b.onclick=()=>openR(v,i,+b.dataset.j))}
+function openR(v,i,j){const h=v.h[i],r=h[2][j];done.add(v.id+i+j);upd();panel.scrollTop=0;
+ const tag=`<span class="tag ${r.s.startsWith("Bổ")?"sup":"src"}">${r.s.startsWith("Bổ")?r.s:"Nguồn: "+r.s}</span>`;
+ panel.innerHTML=`<button class="back" id="bk">← Nhà ${h[0]}</button><h3>${r.t}</h3><p class="sub">${h[1]}</p>${tag}<ul>${r.p.map(x=>`<li>${x}</li>`).join("")}</ul><div id="wg"></div><div class="nav"><button class="chip" id="pv" ${j?"":"disabled"}>← Trước</button><button class="chip" id="nx" ${j<h[2].length-1?"":"disabled"}>Tiếp →</button></div>${v.id==="vc"?'<p class="fine">Nội dung tham khảo và giáo dục, không phải lời khuyên đầu tư (theo miễn trừ trách nhiệm của khóa SSI).</p>':""}`;
+ $("bk").onclick=()=>openH(v,i);$("pv").onclick=()=>openR(v,i,j-1);$("nx").onclick=()=>openR(v,i,j+1);
+ const wg=$("wg");if(r.w==="build")wBuild(wg);else if(r.w==="pat")wPat(wg);else if(r.w==="quiz")wQuiz(wg,v,i,j);else if(r.w)wChart(wg,r.w)}
+function wChart(el,c){const X=x=>10+x*2.4,Y=y=>120-y*1.05;el.innerHTML=`<svg class="cv" viewBox="0 0 260 130">${(c.h||[]).map(h=>`<line x1="10" x2="250" y1="${Y(h[0])}" y2="${Y(h[0])}" stroke="${h[2]||"#c18a1c"}" stroke-dasharray="4 4"/><text x="12" y="${Y(h[0])-3}" font-size="8" fill="${h[2]||"#8a6a1c"}">${h[1]}</text>`).join("")}<polyline class="line" pathLength="1" points="${c.p.map(p=>X(p[0])+","+Y(p[1])).join(" ")}"/></svg><p style="font-size:12px;color:#5d6b61;margin:4px 0">${c.c} (minh họa, không phải dữ liệu thật)</p>`}
+const cs=(o,h,l,c,x=60,w=44)=>{const col=c>=o?"var(--up)":"var(--dn)",Y=v=>110-v,t=Y(Math.max(o,c)),b=Y(Math.min(o,c));return `<line x1="${x}" x2="${x}" y1="${Y(h)}" y2="${Y(l)}" stroke="${col}" stroke-width="3"/><rect x="${x-w/2}" y="${t}" width="${w}" height="${Math.max(2,b-t)}" fill="${col}"/>`};
+let timer;function play(o,h,l,c,draw){clearInterval(timer);const p=c>=o?[o,l,h,c]:[o,h,l,c];let s=0,t=0,hi=o,lo=o;timer=setInterval(()=>{t+=.04;if(t>=1){t=0;s++;if(s>=3){clearInterval(timer);draw();return}}const cur=p[s]+(p[s+1]-p[s])*t;hi=Math.max(hi,cur);lo=Math.min(lo,cur);draw({o,c:cur,h:hi,l:lo})},40)}
+function wBuild(el){let o=40,c=70,h=85,l=25;el.innerHTML=`<svg class="cv" viewBox="0 0 260 130" id="cv"></svg>${[["Mở cửa","o"],["Đóng cửa","c"],["Cao nhất","h"],["Thấp nhất","l"]].map(a=>`<div class="row"><label for="s${a[1]}">${a[0]}</label><input id="s${a[1]}" type="range" min="2" max="108" value="${{o,c,h,l}[a[1]]}"><output id="v${a[1]}"></output></div>`).join("")}<div class="chips"><button class="ghost" id="pl">Xem nến hình thành</button></div><div class="note" id="ex"></div>`;
+ const draw=L=>{L=L||{o,c,h,l};$("cv").innerHTML=`<line x1="10" x2="250" y1="${110-L.o}" y2="${110-L.o}" stroke="#0003" stroke-dasharray="3 4"/><line x1="10" x2="250" y1="${110-L.c}" y2="${110-L.c}" stroke="#0003" stroke-dasharray="3 4"/>`+cs(L.o,L.h,L.l,L.c,130,50)+`<text x="190" y="${110-L.h}" font-size="9" fill="#5d6b61">cao nhất</text><text x="190" y="${118-L.l}" font-size="9" fill="#5d6b61">thấp nhất</text><text x="12" y="${107-L.o}" font-size="9" fill="#5d6b61">mở</text><text x="12" y="${107-L.c}" font-size="9" fill="#5d6b61">đóng</text>`;
+  $("ex").textContent=`${L.c>=L.o?"Nến tăng (xanh, Close > Open)":"Nến giảm (đỏ, Close < Open)"}: thân ${Math.round(Math.abs(L.c-L.o))}, bóng trên ${Math.round(L.h-Math.max(L.o,L.c))}, bóng dưới ${Math.round(Math.min(L.o,L.c)-L.l)} (đơn vị minh họa).`;["o","c","h","l"].forEach(k=>$("v"+k).textContent=Math.round(L[k]))};
+ ["o","c","h","l"].forEach(k=>$("s"+k).oninput=e=>{const n=+e.target.value;if(k=="o")o=n;if(k=="c")c=n;if(k=="h")h=n;if(k=="l")l=n;h=Math.max(h,o,c);l=Math.min(l,o,c);["o","c","h","l"].forEach(q=>$("s"+q).value={o,c,h,l}[q]);draw()});
+ $("pl").onclick=()=>play(o,h,l,c,draw);draw()}
+function wPat(el){let a="Hammer",b="";const N=Object.keys(P);const r=()=>{const cell=(n,p)=>`<div><svg class="cv" viewBox="0 0 120 120">${cs(...p.k,60,40)}</svg><b>${n}</b><div style="font-size:13px;margin-top:4px">${p.t}</div></div>`;
+ el.innerHTML=`<div class="chips">${N.map(n=>`<button class="chip ${n===a?"on":""}" data-n="${n}">${n}</button>`).join("")}</div><label style="font-size:13px">So sánh với <select id="cmp"><option value="">(không)</option>${N.filter(n=>n!==a).map(n=>`<option ${n===b?"selected":""}>${n}</option>`).join("")}</select></label><div class="mini" style="margin-top:12px">${cell(a,P[a])}${b?cell(b,P[b]):""}</div><div class="chips"><button class="ghost" id="pl">Xem nến hình thành</button></div><svg class="cv" id="lv" viewBox="0 0 260 130" style="display:none"></svg>`;
+ el.querySelectorAll(".chip").forEach(x=>x.onclick=()=>{a=x.dataset.n;if(b===a)b="";r()});$("cmp").onchange=e=>{b=e.target.value;r()};
+ $("pl").onclick=()=>{$("lv").style.display="block";const k=P[a].k;play(k[0],k[1],k[2],k[3],L=>{const q=L||{o:k[0],h:k[1],l:k[2],c:k[3]};$("lv").innerHTML=cs(q.o,q.h,q.l,q.c,130,50)})}};r()}
+function wQuiz(el,v,i,j){let q=0,sc=0;const r=()=>{if(q>=Q.length){el.innerHTML=`<div class="note"><b>Kết quả: ${sc}/${Q.length}</b><br>Ôn lại các phòng liên quan trong Vân Các nếu chưa đạt.</div><button class="ghost" id="rt">Làm lại</button>`;$("rt").onclick=()=>{q=0;sc=0;r()};return}
+ const d=Q[q];el.innerHTML=`<div class="q"><b>Câu ${q+1}/${Q.length}.</b> ${d[0]}${d[1].map((o,k)=>`<button data-k="${k}">${o}</button>`).join("")}<div id="fb" style="font-size:13px"></div></div>`;
+ el.querySelectorAll(".q button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;el.querySelectorAll(".q button").forEach((x,m)=>{x.disabled=true;if(m===d[2])x.classList.add("ok")});if(k!==d[2])b.classList.add("no");else sc++;$("fb").innerHTML=`${d[3]} <button class="ghost" id="n">Tiếp</button>`;$("n").onclick=()=>{q++;r()}})};r()}
+</script></body></html>
